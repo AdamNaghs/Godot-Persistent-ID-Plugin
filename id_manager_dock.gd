@@ -69,8 +69,9 @@ func _setup_ui():
 	
 	var delete_btn = Button.new()
 	delete_btn.text = "Delete Registry"
-	delete_btn.pressed.connect(_delete_registry)
+	delete_btn.pressed.connect(_show_delete_confirmation)
 	delete_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	delete_btn.modulate = Color(1.0, 0.8, 0.8)  # Light red tint
 	
 	btn_container.add_child(refresh_btn)
 	btn_container.add_child(export_btn)
@@ -139,6 +140,32 @@ func _export_registry():
 		timer.timeout.connect(func(): _update_status("Ready"))
 	else:
 		_update_status("Failed to export registry", Color.RED)
+
+func _show_delete_confirmation():
+	var registry = PersistentID.get_registry_data()
+	var id_count = registry.size()
+	
+	if id_count == 0:
+		_update_status("No registry to delete", Color.GRAY)
+		return
+	
+	# Create confirmation dialog
+	var confirmation = ConfirmationDialog.new()
+	confirmation.title = "Delete Registry"
+	confirmation.dialog_text = "Are you sure you want to delete the entire registry?\n\nThis will remove " + str(id_count) + " persistent ID(s) permanently.\n\nThis action cannot be undone."
+	confirmation.ok_button_text = "Delete"
+	confirmation.cancel_button_text = "Cancel"
+	
+	# Style the OK button to look dangerous
+	confirmation.confirmed.connect(_delete_registry)
+	confirmation.canceled.connect(func(): _update_status("Delete cancelled", Color.GRAY))
+	
+	# Add to scene and show
+	add_child(confirmation)
+	confirmation.popup_centered()
+	
+	# Clean up dialog after use
+	confirmation.tree_exited.connect(confirmation.queue_free)
 
 func _delete_registry():
 	_update_status("Deleting registry...", Color.ORANGE)
