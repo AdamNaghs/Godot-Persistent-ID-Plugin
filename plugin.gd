@@ -1,9 +1,12 @@
 @tool
 extends EditorPlugin
 
-const _PersistentID = preload("res://addons/persistent_id/persistent_id.gd")
-const _PersistentIDInspector = preload("res://addons/persistent_id/persistent_id_inspector.gd")
-const _IDManagerDock = preload("res://addons/persistent_id/id_manager_dock.gd")
+const addon_path := "res://addons/Persistent-ID-Plugin/"
+
+const pid := preload(addon_path + "persistent_id.gd")
+const inspector := preload(addon_path + "persistent_id_inspector.gd")
+const dock := preload(addon_path + "id_manager_dock.gd")
+const icon := preload(addon_path + "icon.svg")
 
 var dock_instance
 var inspector_plugin
@@ -14,17 +17,17 @@ func _enter_tree():
 	add_custom_type(
 		"PersistentID",
 		"Resource", 
-		_PersistentID,
-		preload("res://addons/persistent_id/icon.svg")
+		pid,
+		icon
 	)
 	
 	# Add custom inspector
-	inspector_plugin = _PersistentIDInspector.new()
+	inspector_plugin = inspector.new()
 	if inspector_plugin:
 		add_inspector_plugin(inspector_plugin)
 	
 	# Create dock
-	dock_instance = _IDManagerDock.new()
+	dock_instance = dock.new()
 	if dock_instance:
 		dock_instance.name = "PersistentIDDock"
 		add_control_to_dock(DOCK_SLOT_LEFT_UL, dock_instance)
