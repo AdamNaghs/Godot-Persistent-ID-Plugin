@@ -24,7 +24,7 @@ var scene_path: String = "":
 		emit_changed()
 
 # Registry path - simple and direct
-const REGISTRY_PATH = "res://addons/persistent_id/id_registry.json"
+const REGISTRY_PATH = "res://addons/Persistent-ID-Plugin/id_registry.json"
 
 # Prevent double generation
 var _generation_in_progress: bool = false
@@ -133,7 +133,7 @@ static func _save_registry(registry: Dictionary):
 	"""Save registry to file"""
 	var dir = DirAccess.open("res://")
 	if dir:
-		dir.make_dir_recursive("addons/persistent_id")
+		dir.make_dir_recursive("addons/Persistent-ID-Plugin")
 	
 	var file = FileAccess.open(REGISTRY_PATH, FileAccess.WRITE)
 	if file:
